@@ -24,27 +24,22 @@ int main(void)
 
   SegmentLCD_Init(false);
 
-  int snake_length = 3;
+  int snake_length = 1;
   snake_position active_body_segments[37]={}; //6*5+7
   active_body_segments[0].minidisplay=1; //the head is the first value in the array
   active_body_segments[0].segment='g';	//thats the starting position
 
-  active_body_segments[1].minidisplay=1;
-  active_body_segments[1].segment='f';
-
-  active_body_segments[2].minidisplay=1;
-  active_body_segments[2].segment='a';
 
 
 
 
 
 
-  //start_init();
+  start_init();
 
   while (1) {
 	  //move();
+	  //display_snake(active_body_segments,snake_length);
 
-	  display_snake(active_body_segments,snake_length);
   }
 }
