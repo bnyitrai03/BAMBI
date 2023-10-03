@@ -3,6 +3,8 @@
 #include "segmentlcd.h"
 #include "segmentlcd_individual.h"
 #include "functions.h"
+#include "em_rmu.h"
+#include "em_cmu.h"
 
 
 /*void move() {
@@ -22,6 +24,7 @@ int main(void)
   /* Chip errata */
   CHIP_Init();
 
+  //Enable LCD module
   SegmentLCD_Init(false);
 
   int snake_length = 1;

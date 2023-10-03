@@ -12,13 +12,13 @@
 #include "functions.h"
 #include <stdlib.h>
 #include <time.h>
+#include <stdint.h>
 
 /*
  snake_postion-t át kéne nevezni position-re
  display_snake-t meg simán snake-re
  !!!
  */
-
 
 void display_snake(snake_position* active_body_segments, int length){
 
@@ -112,30 +112,29 @@ char convert_int_to_char(int randsegment)
 	return randchar;
 }
 
-snake_position* generate_food()
+void generate_food(snake_position* foodptr)
 {
-	srand(time(NULL));						 // initialize the random number generator function
+	// srand nem ad random számokat :(
+	//srand(time(NULL));						 // initialize the random number generator function
 
-	int rand_minidisplay = (rand() % 7) + 1; // choose a random minidisplay (from 1 to 7)
-
+	// memória szemét se lesz random
 	int randsegment;
+	int rand_minidisplay;
 
-	if (rand_minidisplay == 7)
+	/*int rand_minidisplay = (rand() % 7); // choose a random minidisplay (from 1 to 7)
+
+	if (rand_minidisplay == 6)
 	{ // if the last minidisplay gets chosen, we can get one of the 7 segments selected
-		randsegment = (rand() % 7) + 1;  // choose a random segment (from 1 to 7)
+		randsegment = (rand() % 7);  // choose a random segment (from 1 to 7)
 	}
 	else
 	{ // otherwise we can only choose from 5 different segments
 		randsegment = (rand() % 5);     // choose a random segment (from 1 to 5)
-	}
+	}*/
 
 	// we need to convert the randsegment to char
-	snake_position food;
-	food.minidisplay = rand_minidisplay;
-	food.segment = convert_int_to_char(randsegment);
-
-	return &food; // lokális változó címkiadás :(
-	              // gecire nem vágom hogy lehetne ezt máshogy
+	foodptr->minidisplay = rand_minidisplay % 7;
+	foodptr->segment = convert_int_to_char(randsegment % 5);
 }
 
 void start_init() {
@@ -144,10 +143,14 @@ void start_init() {
 	lowerCharSegments[0].m=1;
 	SegmentLCD_LowerSegments(lowerCharSegments);
 
-	snake_position* food = generate_food();
-	if(food->minidisplay == 1 && food->segment == 'g' ) //if the food is in the same starting position as the snake, put the food elsewhere
-		food->minidisplay = 5; // some random place
-	display_snake(food, 1);          //display food at the start in a random position
+	snake_position* foodptr;
+	snake_position food;
+	foodptr = &food;
+	generate_food(foodptr);
+
+	if(food.minidisplay == 1 && food.segment == 'g' ) //if the food is in the same starting position as the snake, put the food elsewhere
+		food.minidisplay = 5; // some random place
+	display_snake(foodptr, 1);          //display food at the start in a random position
 }
 
 
