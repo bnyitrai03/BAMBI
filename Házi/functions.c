@@ -17,37 +17,42 @@
 #include "em_core.h"
 
 
+void turn_off_display(position* active_segments){
+	switch(active_segments[0].segment){
+									case 'a':
+										lowerCharSegments[active_segments[0].minidisplay].a=0;
+										break;
+									case 'b' :
+										lowerCharSegments[active_segments[0].minidisplay].b=0;
+										break;
+									case 'c' :
+										lowerCharSegments[active_segments[0].minidisplay].c=0;
+										break;
+									case 'd' :
+										lowerCharSegments[active_segments[0].minidisplay].d=0;
+										break;
+									case 'e' :
+										lowerCharSegments[active_segments[0].minidisplay].e=0;
+										break;
+									case 'f' :
+										lowerCharSegments[active_segments[0].minidisplay].f=0;
+										break;
+									case 'g' :
+										lowerCharSegments[active_segments[0].minidisplay].g=0;
+										lowerCharSegments[active_segments[0].minidisplay].m=0;
+										break;
+									case 'm' :
+										lowerCharSegments[active_segments[0].minidisplay].m=0;
+										lowerCharSegments[active_segments[0].minidisplay].g=0;
+										break;
 
-void display_position(position* active_segments, int length, position tail){
+						}
+	SegmentLCD_LowerSegments(lowerCharSegments);
+}
 
-	switch(tail.segment){
-							    case 'a':
-									lowerCharSegments[tail.minidisplay].a=0;
-									break;
-								case 'b' :
-									lowerCharSegments[tail.minidisplay].b=0;
-									break;
-								case 'c' :
-									lowerCharSegments[tail.minidisplay].c=0;
-									break;
-								case 'd' :
-									lowerCharSegments[tail.minidisplay].d=0;
-									break;
-								case 'e' :
-									lowerCharSegments[tail.minidisplay].e=0;
-									break;
-								case 'f' :
-									lowerCharSegments[tail.minidisplay].f=0;
-									break;
-								case 'g' :
-									lowerCharSegments[tail.minidisplay].g=0;
-									lowerCharSegments[tail.minidisplay].m=0;
-									break;
-								case 'm' :
-									lowerCharSegments[tail.minidisplay].m=0;
-									lowerCharSegments[tail.minidisplay].g=0;
-									break;
-					}
+void display_position(position* active_segments, int length){
+
+
 
 	for(int i=0;i<length;i++){
 		//first we choose which minidisplay is active, then we display the given segment in the
@@ -82,10 +87,15 @@ void display_position(position* active_segments, int length, position tail){
 			lowerCharSegments[active_disp].m=1;
 			lowerCharSegments[active_disp].g=1;
 			break;
+
 		}
 
+
 		SegmentLCD_LowerSegments(lowerCharSegments);
+
+
 	}
+
 
 }
 
@@ -486,12 +496,12 @@ char convert_int_to_char(int randsegment)
 void generate_food(position* food, position* snake)
 {
 	int randsegment;
-	int rand_minidisplay = (TIMER_CounterGet(TIMER0) % 7); // choose a random minidisplay (from 1 to 7)
+	int rand_minidisplay = (TIMER_CounterGet(TIMER0) % 7); // choose a random minidisplay (from 0 to 6)
 														   // we get the random seed from TIMER0
 
 	if (rand_minidisplay == 6)
 	{ // if the last minidisplay gets chosen, we can get one of the 7 segments selected
-		randsegment = (TIMER_CounterGet(TIMER0) % 7);  // choose a random segment from 7)
+		randsegment = (TIMER_CounterGet(TIMER0) % 7);  // choose a random segment (from 0 to 6)
 	}
 	else
 	{ // otherwise we can only choose from 5 different segments
@@ -543,6 +553,67 @@ int update_direction(direction previous_direction, int R0state, int R1state){
 
 
 void display_snake_length(){
+
+}
+
+// we check if the snake ate itself
+bool collision_with_snake(position* snake, int length){
+	bool is_dead = false; // flag checks if the snake has collided with itself
+
+	for(int i = 1; i < length; i++){ // we skip the collision comparison for the head with itself
+		if(snake[0].minidisplay == snake[i].minidisplay && snake[0].segment == snake[i].segment)
+			is_dead = true;
+	}
+	return is_dead;
+}
+
+// we check if the snake has collided with the food
+int collision_with_food(position* snake, int snake_length, position* food, position* previous_food){
+	int length = snake_length;
+	if(snake[0].minidisplay == food->minidisplay && snake[0].segment == food->segment){ // check if the snake ate the food
+	    	snake[length].minidisplay = food->minidisplay; // food makes the snake longer by attaching a segment to it's tail
+			snake[length].segment = food->segment;
+	    	length ++; // snake becomes longer
+
+	    	previous_food->minidisplay = food->minidisplay;
+	    	previous_food->segment = food->segment;
+	    	turn_off_display(previous_food);
+	    	generate_food(food, snake);
+
+	    }
+	return length;
+}
+
+position move(position* snake, int snake_length, position snake_head){
+
+	position new_snake[37]={};
+	position tail; //we give this back so that we can turn it off in the display function
+	tail = snake[snake_length-1];
+
+	turn_off_display(&tail);
+
+	for(int i=1; i<=snake_length; i++){
+
+			new_snake[i].minidisplay = snake[i-1].minidisplay;
+			new_snake[i].segment = snake[i-1].segment;
+		}
+
+
+	new_snake[0].minidisplay = snake_head.minidisplay;
+	new_snake[0].segment = snake_head.segment;
+
+	for(int i=0; i<37;i++){
+		snake[i].minidisplay = 0;
+		snake[i].segment =0;
+	}
+
+	for(int i=0; i<snake_length; i++){
+		snake[i].minidisplay = new_snake[i].minidisplay;
+		snake[i].segment = new_snake[i].segment;
+	}
+
+
+	return tail;
 
 }
 

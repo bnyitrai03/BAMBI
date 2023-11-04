@@ -24,13 +24,15 @@ typedef enum {
   DOWN = 4
 }direction;
 
-void display_position(position* active_segments, int length, position tail);
+void display_position(position* active_segments, int length);
 
 void delay(int divider);
 
 void start_init(position* starting_segments, position* starting_food);
 
 position calculate_new_head(direction snake_direction, direction previous_direction , position* snake);
+
+position move(position* snake, int snake_length, position snake_head);
 
 int update_direction(direction previous_direction, int R0state, int R1state);
 
@@ -44,6 +46,23 @@ void generate_food(position* food, position* snake);
 
 char convert_int_to_char(int randsegment);
 
+position G_snake_direction(direction snake_direction, direction previous_direction , position* snake);
+
+position M_snake_direction(direction snake_direction, direction previous_direction , position* snake);
+
+position A_snake_direction(direction snake_direction, direction previous_direction , position* snake);
+
+position D_snake_direction(direction snake_direction, direction previous_direction , position* snake);
+
+position F_snake_direction(direction snake_direction, direction previous_direction , position* snake);
+
+position E_snake_direction(direction snake_direction, direction previous_direction , position* snake);
+
+bool collision_with_snake(position* snake, int length);
+
+int collision_with_food(position* snake, int snake_length, position* food, position* previous_food);
+
 void game_over();
+
 
 #endif /* SRC_FUNCTIONS_H_ */
