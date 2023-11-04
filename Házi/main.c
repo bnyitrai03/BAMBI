@@ -24,9 +24,10 @@ bool collision_with_snake(position* snake, int length){
 int collision_with_food(position* snake, int snake_length, position* food){
 	int length = snake_length;
 	if(snake[0].minidisplay == food->minidisplay && snake[0].segment == food->segment){ // check if the snake ate the food
+	    	snake[length].minidisplay = food->minidisplay; // food makes the snake longer by attaching a segment to it's tail
+			snake[length].segment = food->segment;
 	    	length ++; // snake becomes longer
 	    }
-
 	return length;
 }
 
