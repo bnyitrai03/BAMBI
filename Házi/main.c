@@ -30,7 +30,7 @@ int collision_with_food(position* snake, int snake_length, position* food, posit
 
 	    	previous_food->minidisplay = food->minidisplay;
 	    	previous_food->segment = food->segment;
-	    	generate_food(&food, snake);
+	    	generate_food(food, snake);
 	    }
 	return length;
 }
@@ -87,10 +87,12 @@ int main(void)
    TIMER_Enable(TIMER0, true); //timer starts counting
 
 
-    // *******************************
-    // * Initialize R0 and R1 *
-    // *******************************
-    //  NVIC_EnableIRQ();
+   // *******************************
+   // * Initialize PB0 and PB1 *
+   // *******************************
+   // Configure PB0 and PB1 as input pins with pull-up resistors
+   GPIO_PinModeSet(gpioPortB, 9, gpioModeInputPull, 1);
+   GPIO_PinModeSet(gpioPortB, 10, gpioModeInputPull, 1);
 
    //Enable LCD module
    SegmentLCD_Init(false);
