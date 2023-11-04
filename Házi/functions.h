@@ -24,7 +24,7 @@ typedef enum {
   DOWN = 4
 }direction;
 
-void display_position(position* active_body_parts, int length);
+void display_position(position* active_segments, int length, position tail);
 
 void delay(int divider);
 

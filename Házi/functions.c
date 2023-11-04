@@ -18,7 +18,7 @@
 
 
 
-void display_position(position* active_segments, int length){
+void display_position(position* active_segments, int length, position tail){
 
 	for(int i=0;i<length;i++){
 		//first we choose which minidisplay is active, then we display the given segment in the
@@ -54,6 +54,38 @@ void display_position(position* active_segments, int length){
 			lowerCharSegments[active_disp].g=1;
 			break;
 		}
+		switch(tail.segment){
+							case 'a':
+								lowerCharSegments[tail.minidisplay].a=0;
+								break;
+							case 'b' :
+								lowerCharSegments[tail.minidisplay].b=0;
+								break;
+							case 'c' :
+								lowerCharSegments[tail.minidisplay].c=0;
+								break;
+							case 'd' :
+								lowerCharSegments[tail.minidisplay].d=0;
+								break;
+							case 'e' :
+								lowerCharSegments[tail.minidisplay].e=0;
+								break;
+							case 'f' :
+								lowerCharSegments[tail.minidisplay].f=0;
+								break;
+							case 'g' :
+								lowerCharSegments[tail.minidisplay].g=0;
+								lowerCharSegments[tail.minidisplay].m=0;
+								break;
+							case 'm' :
+								lowerCharSegments[tail.minidisplay].m=0;
+								lowerCharSegments[tail.minidisplay].g=0;
+								break;
+
+				}
+
+
+
 		SegmentLCD_LowerSegments(lowerCharSegments);
 
 	}
@@ -403,11 +435,11 @@ position calculate_new_head(direction snake_direction, direction previous_direct
 
 	}
 	//if we go out of one side of the minidisplays, we have to come back in on the other side
-    if (snake[0].minidisplay==7)
+    if (new_head.minidisplay==7)
     {
         new_head.minidisplay=0;
     }
-    else if (snake[0].minidisplay==-1)
+    else if (new_head.minidisplay==-1)
     {
         new_head.minidisplay=6;
     }
