@@ -10,9 +10,10 @@
 #include "segmentlcd.h"
 #include "segmentlcd_individual.h"
 #include "functions.h"
+#include "em_timer.h"
 #include <stdlib.h>
-#include <time.h>
 #include <stdint.h>
+#include <time.h>
 
 
 
@@ -63,16 +64,6 @@ void delay(int divider) {
    for(int d=0;d<1500000/divider;d++);
 }
 
-
-//void move(){
-
-//}
-
-void snake_body_position(){
-
-
-}
-
 char convert_int_to_char(int randsegment)
 {
 	char randchar;
@@ -110,47 +101,67 @@ char convert_int_to_char(int randsegment)
 	return randchar;
 }
 
-void generate_food(position* foodptr)
+void generate_food(position* food, position* snake)
 {
-	// srand nem ad random szamokat :(
-	//srand(time(NULL));						 // initialize the random number generator function
-
-	// memoria szemet se lesz random
 	int randsegment;
-
-	int rand_minidisplay = (rand() % 7); // choose a random minidisplay (from 1 to 7)
+	int rand_minidisplay = (TIMER_CounterGet(TIMER0) % 7); // choose a random minidisplay (from 1 to 7)
+														   // we get the random seed from TIMER0
 
 	if (rand_minidisplay == 6)
 	{ // if the last minidisplay gets chosen, we can get one of the 7 segments selected
-		randsegment = (rand() % 7);  // choose a random segment (from 1 to 7)
+		randsegment = (TIMER_CounterGet(TIMER0) % 7);  // choose a random segment (from 1 to 7)
 	}
 	else
 	{ // otherwise we can only choose from 5 different segments
-		randsegment = (rand() % 5);     // choose a random segment (from 1 to 5)
+		randsegment = (TIMER_CounterGet(TIMER0) % 5);     // choose a random segment (from 1 to 5)
 	}
 
 	// we need to convert the randsegment to char
-	foodptr->minidisplay = rand_minidisplay % 7;
-	foodptr->segment = convert_int_to_char(randsegment % 5);
+	food->minidisplay = rand_minidisplay;
+	food->segment = convert_int_to_char(randsegment);
+
+	if(food->minidisplay == snake->minidisplay && food->segment == snake->segment)
+	 generate_food(food,snake); // if the apple spawns inside the snake, we generate a new one
 }
 
-void start_init(position* starting_segments, position* starting_food) {
+void start_init(position* starting_segment, position* starting_food) {
 
-	starting_segments[0].minidisplay=0; //the head is the first value in the array
-	starting_segments[0].segment='g';	//thats the starting position
+	starting_segment[0].minidisplay=0; //the head is the first value in the array
+	starting_segment[0].segment='g';	//thats the starting position
 
-	generate_food(starting_food);
+	generate_food(starting_food, starting_segment);
+}
 
-	if(starting_food->minidisplay == 1 && starting_food->segment == 'g' ) //if the starting_food is in the same starting position as the snake, put the food elsewhere
-		starting_food->minidisplay = (rand() % 5)+1; // some random place (random number between 2 and 6)
-	display_position(starting_food, 1);          //display food at the start in a random position
+
+
+/* calculate the new direction where the snake will go
+					  UP
+                      ↑
+                      2
+             LEFT ← 3   1 → RIGHT
+                      4
+                      ↓
+                     DOWN
+pressing R0 the snake rotates left, which increases current_direction's value
+pressing R1 the snake rotates right, which decreases current_direction's value
+ */
+int update_direction(direction current_direction, int R0state, int R1state){
+	int new_direction = current_direction;   // if there weren't any button presses, the snake keeps going in the same direction
+	if (R0state){
+		new_direction ++;
+		if(new_direction == 5)
+			new_direction = 1;
+	}
+
+	if (R1state){
+	   new_direction --;
+	    if(new_direction == 0)
+		   new_direction = 4;
+		}
+	return new_direction;
 }
 
 
 void display_snake_length(){
-
-}
-
-void game_over(){
 
 }

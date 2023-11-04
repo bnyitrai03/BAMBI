@@ -30,7 +30,7 @@ void delay(int divider);
 
 void start_init(position* starting_segments, position* starting_food);
 
-//void move();
+int update_direction(direction current_direction, int R0state, int R1state);
 
 void snake_body_position();
 
