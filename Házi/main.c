@@ -7,8 +7,7 @@
 #include "em_cmu.h"
 
 
-void move(int button_state, position* active_body_segments) { //ezt a button state-et nem is paraméterként kéne megadni, hanem a flageket
-	//kéne figyelni, amiket az interruptal állítunk fv-en belül
+/*void move(int button_state, position* active_body_segments) {
 
 	switch(button_state)
 	{
@@ -42,7 +41,8 @@ void move(int button_state, position* active_body_segments) { //ezt a button sta
 		delay(5);
 		}
 	}
-}
+}*/
+
 int main(void)
 {
   /* Chip errata */
@@ -61,7 +61,7 @@ int main(void)
   start_init(active_body_segments, active_food); //we initialize the snake and the food's starting state
 
   while (1) {
-	  move(0, active_body_segments);
+	  //move(0, active_body_segments);
 	  //display_position(active_body_segments, snake_length);
 
   }

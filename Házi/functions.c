@@ -14,12 +14,6 @@
 #include <time.h>
 #include <stdint.h>
 
-/*
- snake_postion-t át kéne nevezni position-re
- display_snake-t meg simán snake-re
- !!!
- */
-
 
 
 void display_position(position* active_segments, int length){
@@ -118,10 +112,10 @@ char convert_int_to_char(int randsegment)
 
 void generate_food(position* foodptr)
 {
-	// srand nem ad random számokat :(
+	// srand nem ad random szamokat :(
 	//srand(time(NULL));						 // initialize the random number generator function
 
-	// memória szemét se lesz random
+	// memoria szemet se lesz random
 	int randsegment;
 
 	int rand_minidisplay = (rand() % 7); // choose a random minidisplay (from 1 to 7)

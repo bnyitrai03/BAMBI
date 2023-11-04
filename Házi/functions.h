@@ -17,6 +17,13 @@ typedef struct {
 
 }position;
 
+typedef enum {
+  RIGHT = 1,
+  UP = 2,
+  LEFT = 3,
+  DOWN = 4
+}direction;
+
 void display_position(position* active_body_parts, int length);
 
 void delay(int divider);
