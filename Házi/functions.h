@@ -28,19 +28,21 @@ void display_position(position* active_body_parts, int length);
 
 void delay(int divider);
 
-char convert_int_to_char(int randsegment);
-
-void generate_food(position* food, position* snake);
-
 void start_init(position* starting_segments, position* starting_food);
 
-int update_direction(direction current_direction, int R0state, int R1state);
+position calculate_new_head(direction snake_direction, direction previous_direction , position* snake);
+
+int update_direction(direction previous_direction, int R0state, int R1state);
 
 void snake_body_position();
 
 void food();
 
 void display_snake_length();
+
+void generate_food(position* food, position* snake);
+
+char convert_int_to_char(int randsegment);
 
 void game_over();
 
