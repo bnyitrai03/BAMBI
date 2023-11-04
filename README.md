@@ -3,7 +3,7 @@
 Kígyós játék (nyomógomb)
 Írjátok meg az alábbi játékot az STK3700-as kártyára! A feladat minél több ennivaló felfalása egy kígyóval.
 
-Általános szabályok
+/Általános szabályok
 
 A pálya az LCD kijelző alfanumerikus részének az ábrán beszínezett szegmenseiből áll. A kígyó a játék kezdetekor egy szegmens hosszú (a középső vízszintes pozíciók esetén a két kis szegmens (G + M) együttesen ér fel egy szegmenssel). A kezdeti pozíció legyen a pálya bal szélének két középső szegmense (az ábrán pirossal színezve)! A játék kezdetén helyezzetek el egy véletlenszerűen kiválasztott szegmenset a kígyó testén kívül. Ez jelképezi az ennivalót.
 
