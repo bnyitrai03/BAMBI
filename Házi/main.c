@@ -31,6 +31,37 @@ int collision_with_food(position* snake, int snake_length, position* food){
 	return length;
 }
 
+position move(position* snake, int snake_length, position snake_head){
+
+	position new_snake[37]={};
+	position tail; //we give this back so that we can turn it off in the display function
+	tail = snake[snake_length-1];
+
+	for(int i=1; i<=snake_length; i++){
+
+			new_snake[i].minidisplay = snake[i-1].minidisplay;
+			new_snake[i].segment = snake[i-1].segment;
+		}
+
+
+	new_snake[0].minidisplay = snake_head.minidisplay;
+	new_snake[0].segment = snake_head.segment;
+
+	for(int i=0; i<37;i++){
+		snake[i].minidisplay = 0;
+		snake[i].segment =0;
+	}
+
+	for(int i=0; i<snake_length; i++){
+		snake[i].minidisplay = new_snake[i].minidisplay;
+		snake[i].segment = new_snake[i].segment;
+	}
+
+
+	return tail;
+
+}
+
 int main(void)
 {
   CHIP_Init();
@@ -68,22 +99,28 @@ int main(void)
   	  	  	  	  	  	             // at the start the snake goes right
    bool dead = false; // checks if the snake is alive
 
-  start_init(active_body_segments, food); //we initialize the snake and the food's starting state
+   direction previous_direction = RIGHT; //for testing purposes we inicialize it with something
 
-  direction previous_direction = RIGHT; //for testing purposes we inicialize it with something
+   position new_head = {};
 
-  position new_head = {};
+   position tail = {};
+
+
+   start_init(active_body_segments, food); //we initialize the snake and the food's starting state
 
 
   while (1) {
 	  while(!dead){
 
 
-	  display_position(active_body_segments, snake_length); //display the position of the snake and the food
+	  display_position(active_body_segments, snake_length, tail); //display the position of the snake and the food
 
 	  new_head = calculate_new_head(snake_direction, previous_direction, active_body_segments); //update the active_body_segments
 	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  //according to the previous and current directions
-	  active_body_segments[0] = new_head;
+
+	  tail = move(active_body_segments, snake_length, new_head);
+
+	  snake_length = collision_with_food(active_body_segments, snake_length, food);
 
 	  previous_direction = snake_direction; //after updating, the previously current direction becomes the
 	  	  	  	  	  	  	  	  	  	  	//previous direction
