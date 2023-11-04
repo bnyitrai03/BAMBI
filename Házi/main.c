@@ -7,8 +7,31 @@
 #include "em_cmu.h"
 
 
-void move() {
+void move(int button_state, position* active_body_segments) { //ezt a button state-et nem is paraméterként kéne megadni, hanem a flageket
+	//kéne figyelni, amiket az interruptal állítunk fv-en belül
+
+	switch(button_state)
+	{
+	case 0: //Right
 	for(int i=0; i<7;i++){
+		lowerCharSegments[i].g=1;
+		lowerCharSegments[i].m=1;
+
+		active_body_segments[0].minidisplay=i;
+		active_body_segments[0].segment='g';
+
+		display_position(active_body_segments, 1);
+		delay(2);
+		lowerCharSegments[i].g=0;
+		lowerCharSegments[i].m=0;
+
+		active_body_segments=0;
+
+
+		delay(5);
+		}
+	case 1: //Left
+	for(int i=6; i>=0; i--){
 		lowerCharSegments[i].g=1;
 		lowerCharSegments[i].m=1;
 		SegmentLCD_LowerSegments(lowerCharSegments);
@@ -17,6 +40,7 @@ void move() {
 		lowerCharSegments[i].m=0;
 		SegmentLCD_LowerSegments(lowerCharSegments);
 		delay(5);
+		}
 	}
 }
 int main(void)
@@ -37,8 +61,8 @@ int main(void)
   start_init(active_body_segments, active_food); //we initialize the snake and the food's starting state
 
   while (1) {
-	  //move();
-	  display_position(active_body_segments, snake_length);
+	  move(0, active_body_segments);
+	  //display_position(active_body_segments, snake_length);
 
   }
 }
