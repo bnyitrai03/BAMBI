@@ -10,10 +10,11 @@
 #include "segmentlcd.h"
 #include "segmentlcd_individual.h"
 #include "functions.h"
-#include "em_timer.h"
 #include <stdlib.h>
-#include <stdint.h>
 #include <time.h>
+#include <stdint.h>
+#include "em_timer.h"
+#include "em_core.h"
 
 
 
@@ -57,18 +58,373 @@ void display_position(position* active_segments, int length){
 
 	}
 
-	}
+}
 
 
 void delay(int divider) {
    for(int d=0;d<1500000/divider;d++);
 }
 
+position G_snake_direction(direction snake_direction, direction previous_direction , position* snake){
+
+	position new_head = snake[0];
+	switch (previous_direction) { //we check where we were going before changing directions
+		                case RIGHT:
+		                    switch (snake_direction) {//knowing where we were previously, we know where we need to
+		                    						// go next given a specific direction
+		                        case RIGHT:
+		                            new_head.minidisplay = snake[0].minidisplay + 1; //e.g.: if we were going right previously, then we
+		                            						//just need to go to the next minidisplay
+		                            break;
+		                        case UP:
+		                            if (snake[0].minidisplay == 6) {//e.g.: if we were going right previously, then
+		                            							//if we go up, and we were on G/M then now we have to
+		                            							//go to 'f' segment of the next minidisplay
+		                            							//here the exception is if we were on the last minidisplay
+		                            							//then we have to use the 'b' and 'c' segments too, which we
+		                            							//normally wouldnt, so in this case we have to go to the 'b' segment
+		                            	new_head.segment ='b';
+		                            }
+		                            new_head.minidisplay = snake[0].minidisplay + 1;
+		                            new_head.segment = 'f';
+		                            break;
+		                        case DOWN:
+		                            if (snake[0].minidisplay == 6) { //e.g.: if we were going right before, and now we are going down
+		                            							//then we were on G/M then we have to go to the next minidisplays
+		                            							//'e' segment (exception is pretty much the same as the previous one)
+		                                new_head.segment = 'c';
+		                            }
+		                            new_head.minidisplay = snake[0].minidisplay + 1;
+		                            new_head.segment = 'e';
+		                            break;
+		                    }
+		                    break;
+
+		                case LEFT:
+		                    switch (snake_direction) {
+		                        case LEFT:
+		                        	new_head.minidisplay = snake[0].minidisplay - 1; //if we were going left previously and we are still going left
+		                            						//then we just need to decrease the value of the minidisplay
+		                            break;
+		                        case UP:
+		                            new_head.segment = 'f'; //if we were going left and now we are going up, then we will land on
+		                            						//'f' if we were on G/M previously
+		                            break;
+		                        case DOWN:
+		                            new_head.segment = 'e'; //if we were going left and now we are going down, then we will land on
+            												//'e' if we were on G/M previously
+		                            break;
+		                    }
+		                    break;							//the rest of these type of direction functions all work in this manner
+		            }
+	return new_head;
+}
+
+position M_snake_direction(direction snake_direction, direction previous_direction , position* snake){
+
+	position new_head = snake[0];
+	switch(previous_direction){
+
+		case RIGHT:
+			switch(snake_direction){
+
+				case RIGHT:
+					new_head.minidisplay = snake[0].minidisplay + 1;
+                    break;
+				case UP:
+                    if(snake[0].minidisplay==6){
+                        new_head.segment='b';
+                        }
+                    new_head.minidisplay = snake[0].minidisplay + 1;
+					new_head.segment='f';
+                    break;
+				case DOWN:
+                    if(snake[0].minidisplay==6){
+                        new_head.segment='c';
+                        }
+                    new_head.minidisplay = snake[0].minidisplay + 1;
+					new_head.segment='e';
+                    break;
+            }
+		break;
+
+		case LEFT:
+			switch(snake_direction){
+
+				case LEFT:
+					new_head.minidisplay = snake[0].minidisplay - 1;
+                    break;
+				case UP:
+					new_head.segment='f';
+                    break;
+				case DOWN:
+					new_head.segment='e';
+				    break;
+
+
+				}
+        break;
+			}
+	return new_head;
+}
+
+position A_snake_direction(direction snake_direction, direction previous_direction , position* snake){
+
+	position new_head = snake[0];
+	switch(previous_direction){
+
+			case RIGHT:
+				switch(snake_direction){
+
+					case RIGHT:
+						new_head.minidisplay = snake[0].minidisplay + 1;
+                        break;
+					case UP:
+                        if(snake[0].minidisplay==6){
+                            new_head.segment='c';
+                            }
+                        new_head.minidisplay = snake[0].minidisplay + 1;
+						new_head.segment='e';
+                        break;
+					case DOWN:
+                        if(snake[0].minidisplay==6){
+                            new_head.segment='b';
+                            }
+                        new_head.minidisplay = snake[0].minidisplay + 1;
+						new_head.segment='f';
+					    break;
+                }
+            break;
+
+			case LEFT:
+				switch(snake_direction){
+
+					case LEFT:
+						new_head.minidisplay = snake[0].minidisplay - 1;
+                        break;
+					case UP:
+						new_head.segment='e';
+                        break;
+					case DOWN:
+						new_head.segment='f';
+					    break;
+
+
+					}
+            break;
+
+				}
+	return new_head;
+}
+//case d and a works the same way , but because the way switch case works, i have to repeat it
+position D_snake_direction(direction snake_direction, direction previous_direction , position* snake){
+
+	position new_head = snake[0];
+	switch(previous_direction){
+
+			case RIGHT:
+				switch(snake_direction){
+
+					case RIGHT:
+						new_head.minidisplay = snake[0].minidisplay + 1;
+                        break;
+					case UP:
+                        if(snake[0].minidisplay==6){
+                            new_head.segment='c';
+                            }
+                        new_head.minidisplay = snake[0].minidisplay + 1;
+						new_head.segment='e';
+                        break;
+					case DOWN:
+                        if(snake[0].minidisplay==6){
+                            new_head.segment='b';
+                            }
+                        new_head.minidisplay = snake[0].minidisplay + 1;
+						new_head.segment='f';
+					    break;
+                }
+            break;
+
+			case LEFT:
+				switch(snake_direction){
+
+					case LEFT:
+						new_head.minidisplay = snake[0].minidisplay - 1;
+                        break;
+					case UP:
+						new_head.segment='e';
+                        break;
+					case DOWN:
+						new_head.segment='f';
+					    break;
+
+
+					}
+            break;
+
+			}
+	return new_head;
+}
+
+position F_snake_direction(direction snake_direction, direction previous_direction , position* snake){
+
+	position new_head = snake[0];
+	switch(previous_direction){
+
+			case UP:
+				switch(snake_direction){
+
+					case RIGHT:
+						new_head.segment='a';
+                        break;
+					case UP:
+						new_head.segment='e';
+                        break;
+                    case LEFT:
+                    	new_head.minidisplay = snake[0].minidisplay - 1;
+                        new_head.segment='a';
+                }
+            break;
+
+			case DOWN:
+				switch(snake_direction){
+
+					case RIGHT:
+						new_head.minidisplay = snake[0].minidisplay - 1;
+                        new_head.segment='g';
+                        break;
+					case LEFT:
+						new_head.segment='g';
+                        break;
+					case DOWN:
+						new_head.segment='e';
+					    break;
+
+
+					}
+            break;
+
+		}
+return new_head;
+
+}
+
+position E_snake_direction(direction snake_direction, direction previous_direction , position* snake){
+
+	position new_head = snake[0];
+	switch(previous_direction){
+
+			case UP:
+				switch(snake_direction){
+
+					case RIGHT:
+						new_head.segment='g';
+                        break;
+					case UP:
+						new_head.segment='f';
+                        break;
+                    case LEFT:
+                    	new_head.minidisplay = snake[0].minidisplay - 1;
+                        new_head.segment='g';
+                }
+            break;
+
+			case DOWN:
+				switch(snake_direction){
+
+					case RIGHT:
+						new_head.minidisplay = snake[0].minidisplay - 1;
+                        new_head.segment='d';
+                        break;
+					case LEFT:
+						new_head.segment='d';
+                        break;
+					case DOWN:
+						new_head.segment='f';
+					    break;
+
+
+					}
+            break;
+
+
+		}
+	return new_head;
+}
+
+position calculate_new_head(direction snake_direction, direction previous_direction , position* snake){
+	//we only need to check the head of the snake,
+	//which is the first item in the active_body_segments array
+
+	//first we look at where we are currently, and then make a decision about where to move next
+	//in the light of the current direction that we are moving in
+
+	direction snake_direction_ = snake_direction;
+	direction previous_direction_ = previous_direction;
+	position* snake_=snake;
+	position new_head = snake[0];
+
+
+	 switch (snake[0].segment) { //first we look at where we are, depending on which segment we are on, we
+	 	 	 	 	 	 	 	 //have to make different decisions regarding where to move next
+	 	 	 	 	 	 	 	 //we also have to use different logic depending on which direction were we
+	 	 	 	 	 	 	 	 //moving previously, which is handled in a function in every case
+	 	 	 	 	 	 	 	 //There is also some comments about the inner workings of these functions at the start of
+	 	 	 	 	 	 	 	 //the G_snake_direction function, they all work in the same manner
+	        case 'g':
+
+	        	new_head = G_snake_direction(snake_direction_,previous_direction_ ,snake_);
+	            break;
+
+	        case 'm' :
+
+	        	new_head = M_snake_direction(snake_direction_,previous_direction_ ,snake_);
+	        	break;
+
+	        case 'a':
+
+	        	new_head = A_snake_direction(snake_direction_,previous_direction_ ,snake_);
+	        	break;
+
+	        case 'd':
+
+	        	new_head = D_snake_direction(snake_direction_,previous_direction_ ,snake_);
+	        	break;
+
+	        case 'f':
+
+	        	new_head = F_snake_direction(snake_direction_,previous_direction_ ,snake_);
+	        	break;
+	        case 'e':
+
+
+	        	new_head = E_snake_direction(snake_direction_,previous_direction_ ,snake_);
+	        	break;
+
+	}
+	//if we go out of one side of the minidisplays, we have to come back in on the other side
+    if (snake[0].minidisplay==7)
+    {
+        new_head.minidisplay=0;
+    }
+    else if (snake[0].minidisplay==-1)
+    {
+        new_head.minidisplay=6;
+    }
+
+   return new_head;
+}
+
+void snake_body_position(){
+
+
+}
+
 char convert_int_to_char(int randsegment)
 {
 	char randchar;
 
-	switch (randsegment) //we get a random number from 0 to 7
+	switch (randsegment)
 	{
 	case 0:
 		randchar = 'a';
@@ -132,21 +488,19 @@ void start_init(position* starting_segment, position* starting_food) {
 	generate_food(starting_food, starting_segment);
 }
 
-
-
 /* calculate the new direction where the snake will go
 					  UP
-                      ↑
+                      |
                       2
-             LEFT ← 3   1 → RIGHT
+             LEFT <-3   1 -> RIGHT
                       4
-                      ↓
+                      |
                      DOWN
 pressing R0 the snake rotates left, which increases current_direction's value
 pressing R1 the snake rotates right, which decreases current_direction's value
  */
-int update_direction(direction current_direction, int R0state, int R1state){
-	int new_direction = current_direction;   // if there weren't any button presses, the snake keeps going in the same direction
+int update_direction(direction previous_direction, int R0state, int R1state){
+	int new_direction = previous_direction;   // if there weren't any button presses, the snake keeps going in the same direction
 	if (R0state){
 		new_direction ++;
 		if(new_direction == 5)
@@ -158,10 +512,14 @@ int update_direction(direction current_direction, int R0state, int R1state){
 	    if(new_direction == 0)
 		   new_direction = 4;
 		}
-	return new_direction;
+	return new_direction; //give the previous direction back with a pointer too
 }
 
 
 void display_snake_length(){
+
+}
+
+void game_over(){
 
 }
