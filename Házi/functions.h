@@ -30,13 +30,19 @@ void delay(int divider);
 
 void start_init(position* starting_segments, position* starting_food);
 
-int update_direction(direction current_direction, int R0state, int R1state);
+void move(direction snake_direction, direction previous_direction , position* snake);
+
+int update_direction(direction previous_direction, int R0state, int R1state);
 
 void snake_body_position();
 
 void food();
 
 void display_snake_length();
+
+void generate_food(position* food, position* snake);
+
+char convert_int_to_char(int randsegment);
 
 void game_over();
 

@@ -68,15 +68,24 @@ int main(void)
    bool dead = false; // checks if the snake is alive
 
   start_init(active_body_segments, food); //we initialize the snake and the food's starting state
+
+  direction previous_direction = RIGHT; //for testing purposes we inicialize it with something
+
+
   while (1) {
 	  while(!dead){
-	  display_position(active_body_segments, snake_length);
-	  display_position(food, 1);
-	  //display_score()
-	  // update_direction()
-	  // move()
-	  // collision()
+
+
+	  display_position(active_body_segments, snake_length); //display the position of the snake and the food
+
+	  move(snake_direction, previous_direction, active_body_segments); //update the active_body_segments
+	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  	  //according to the previous and current directions
+
+	  previous_direction = snake_direction; //after updating, the previously current direction becomes the
+	  	  	  	  	  	  	  	  	  	  	//previous direction
+
+
 	  }
-	//display_dead()
+
   }
 }
