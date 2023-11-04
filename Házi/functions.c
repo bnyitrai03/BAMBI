@@ -20,6 +20,35 @@
 
 void display_position(position* active_segments, int length, position tail){
 
+	switch(tail.segment){
+							    case 'a':
+									lowerCharSegments[tail.minidisplay].a=0;
+									break;
+								case 'b' :
+									lowerCharSegments[tail.minidisplay].b=0;
+									break;
+								case 'c' :
+									lowerCharSegments[tail.minidisplay].c=0;
+									break;
+								case 'd' :
+									lowerCharSegments[tail.minidisplay].d=0;
+									break;
+								case 'e' :
+									lowerCharSegments[tail.minidisplay].e=0;
+									break;
+								case 'f' :
+									lowerCharSegments[tail.minidisplay].f=0;
+									break;
+								case 'g' :
+									lowerCharSegments[tail.minidisplay].g=0;
+									lowerCharSegments[tail.minidisplay].m=0;
+									break;
+								case 'm' :
+									lowerCharSegments[tail.minidisplay].m=0;
+									lowerCharSegments[tail.minidisplay].g=0;
+									break;
+					}
+
 	for(int i=0;i<length;i++){
 		//first we choose which minidisplay is active, then we display the given segment in the
 		//active minidisplay
@@ -54,40 +83,8 @@ void display_position(position* active_segments, int length, position tail){
 			lowerCharSegments[active_disp].g=1;
 			break;
 		}
-		switch(tail.segment){
-							case 'a':
-								lowerCharSegments[tail.minidisplay].a=0;
-								break;
-							case 'b' :
-								lowerCharSegments[tail.minidisplay].b=0;
-								break;
-							case 'c' :
-								lowerCharSegments[tail.minidisplay].c=0;
-								break;
-							case 'd' :
-								lowerCharSegments[tail.minidisplay].d=0;
-								break;
-							case 'e' :
-								lowerCharSegments[tail.minidisplay].e=0;
-								break;
-							case 'f' :
-								lowerCharSegments[tail.minidisplay].f=0;
-								break;
-							case 'g' :
-								lowerCharSegments[tail.minidisplay].g=0;
-								lowerCharSegments[tail.minidisplay].m=0;
-								break;
-							case 'm' :
-								lowerCharSegments[tail.minidisplay].m=0;
-								lowerCharSegments[tail.minidisplay].g=0;
-								break;
-
-				}
-
-
 
 		SegmentLCD_LowerSegments(lowerCharSegments);
-
 	}
 
 }
@@ -474,13 +471,10 @@ char convert_int_to_char(int randsegment)
 		randchar = 'd';
 		break;
 	case 5:
-		randchar = 'a';
+		randchar = 'c';
 		break;
 	case 6:
 		randchar = 'b';
-		break;
-	case 7:
-		randchar = 'c';
 		break;
 	default:
 		randchar = '0';
@@ -497,7 +491,7 @@ void generate_food(position* food, position* snake)
 
 	if (rand_minidisplay == 6)
 	{ // if the last minidisplay gets chosen, we can get one of the 7 segments selected
-		randsegment = (TIMER_CounterGet(TIMER0) % 7);  // choose a random segment (from 1 to 7)
+		randsegment = (TIMER_CounterGet(TIMER0) % 7);  // choose a random segment from 7)
 	}
 	else
 	{ // otherwise we can only choose from 5 different segments
