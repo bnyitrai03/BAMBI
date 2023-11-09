@@ -22,7 +22,7 @@ typedef enum {
   UP = 2,
   LEFT = 3,
   DOWN = 4
-}direction;
+}direction; //we will decide which way we are turning by incrementing or decrementing its value
 
 #define BUTTON0 9
 #define BUTTON1 10
@@ -36,15 +36,9 @@ void start_init(position* starting_segments, position* starting_food);
 
 position calculate_new_head(direction snake_direction, direction previous_direction , position* snake);
 
-position move(position* snake, int snake_length, position snake_head);
+void move(position* snake, int snake_length, position snake_head);
 
 direction update_direction(direction previous_direction, bool left, bool right);
-
-void snake_body_position();
-
-void food();
-
-void display_snake_length();
 
 void generate_food(position* food, position* snake);
 
@@ -62,9 +56,13 @@ position F_snake_direction(direction snake_direction, direction previous_directi
 
 position E_snake_direction(direction snake_direction, direction previous_direction , position* snake);
 
+position C_snake_direction(direction snake_direction, direction previous_direction , position *snake);
+
+position B_snake_direction(direction snake_direction, direction previous_direction , position *snake);
+
 bool collision_with_snake(position* snake, int length);
 
-int collision_with_food(position* snake, int snake_length, position* food, position* previous_food);
+int collision_with_food(position* snake, int snake_length, position* food);
 
 void number_decoder(int length, int display_num);
 
