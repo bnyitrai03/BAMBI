@@ -24,6 +24,10 @@ typedef enum {
   DOWN = 4
 }direction;
 
+#define BUTTON0 9
+#define BUTTON1 10
+
+
 void display_position(position* active_segments, int length);
 
 void delay(int divider);
@@ -34,7 +38,7 @@ position calculate_new_head(direction snake_direction, direction previous_direct
 
 position move(position* snake, int snake_length, position snake_head);
 
-int update_direction(direction previous_direction, int R0state, int R1state);
+direction update_direction(direction previous_direction, bool left, bool right);
 
 void snake_body_position();
 
@@ -62,7 +66,12 @@ bool collision_with_snake(position* snake, int length);
 
 int collision_with_food(position* snake, int snake_length, position* food, position* previous_food);
 
-void game_over();
+void number_decoder(int length, int display_num);
 
+void display_length(int length);
+
+void blink_dots();
+
+void upperCharSegments_0();
 
 #endif /* SRC_FUNCTIONS_H_ */

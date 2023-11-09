@@ -17,7 +17,7 @@
 #include "em_core.h"
 
 
-void turn_off_display(position* active_segments){
+/*void turn_off_display(position* active_segments){
 	switch(active_segments[0].segment){
 									case 'a':
 										lowerCharSegments[active_segments[0].minidisplay].a=0;
@@ -48,6 +48,179 @@ void turn_off_display(position* active_segments){
 
 						}
 	SegmentLCD_LowerSegments(lowerCharSegments);
+}*/
+
+void turn_off_display(position* active_segments, int length){
+	for(int i=0;i<length;i++){
+			//first we choose which minidisplay is active, then we display the given segment in the
+			//active minidisplay
+			int active_disp = active_segments[i].minidisplay; //checks the current position's minidisplay value
+
+			//we check which segment is active, and then display it
+			switch(active_segments[i].segment){
+			case 'a':
+				lowerCharSegments[active_disp].a=0;
+				break;
+			case 'b' :
+				lowerCharSegments[active_disp].b=0;
+				break;
+			case 'c' :
+				lowerCharSegments[active_disp].c=0;
+				break;
+			case 'd' :
+				lowerCharSegments[active_disp].d=0;
+				break;
+			case 'e' :
+				lowerCharSegments[active_disp].e=0;
+				break;
+			case 'f' :
+				lowerCharSegments[active_disp].f=0;
+				break;
+			case 'g' :
+				lowerCharSegments[active_disp].g=0;
+				lowerCharSegments[active_disp].m=0;
+				break;
+			case 'm' :
+				lowerCharSegments[active_disp].m=0;
+				lowerCharSegments[active_disp].g=0;
+				break;
+
+			}
+
+			SegmentLCD_LowerSegments(lowerCharSegments);
+		}
+}
+
+void number_decoder(int length, int display_num){ //decodes the number so the 7-segment can display it later
+
+	switch(length){
+
+		case 0 :
+			upperCharSegments[display_num].a=1;
+			upperCharSegments[display_num].f=1;
+			upperCharSegments[display_num].b=1;
+			upperCharSegments[display_num].c=1;
+			upperCharSegments[display_num].e=1;
+			upperCharSegments[display_num].d=1;
+			break;
+		case 1 :
+			upperCharSegments[display_num].b=1;
+			upperCharSegments[display_num].c=1;
+			break;
+		case 2 :
+			upperCharSegments[display_num].a=1;
+			upperCharSegments[display_num].b=1;
+			upperCharSegments[display_num].g=1;
+			upperCharSegments[display_num].e=1;
+			upperCharSegments[display_num].d=1;
+			break;
+		case 3 :
+			upperCharSegments[display_num].a=1;
+			upperCharSegments[display_num].b=1;
+			upperCharSegments[display_num].g=1;
+			upperCharSegments[display_num].c=1;
+			upperCharSegments[display_num].d=1;
+			break;
+		case 4 :
+			upperCharSegments[display_num].f=1;
+			upperCharSegments[display_num].g=1;
+			upperCharSegments[display_num].b=1;
+			upperCharSegments[display_num].c=1;
+			break;
+		case 5 :
+			upperCharSegments[display_num].a=1;
+			upperCharSegments[display_num].f=1;
+			upperCharSegments[display_num].g=1;
+			upperCharSegments[display_num].c=1;
+			upperCharSegments[display_num].d=1;
+			break;
+		case 6 :
+			upperCharSegments[display_num].f=1;
+			upperCharSegments[display_num].g=1;
+			upperCharSegments[display_num].e=1;
+			upperCharSegments[display_num].d=1;
+			upperCharSegments[display_num].c=1;
+			break;
+		case 7 :
+			upperCharSegments[display_num].a=1;
+			upperCharSegments[display_num].b=1;
+			upperCharSegments[display_num].c=1;
+			break;
+		case 8 :
+			upperCharSegments[display_num].a=1;
+			upperCharSegments[display_num].f=1;
+			upperCharSegments[display_num].g=1;
+			upperCharSegments[display_num].b=1;
+			upperCharSegments[display_num].c=1;
+			upperCharSegments[display_num].e=1;
+			upperCharSegments[display_num].d=1;
+			break;
+		case 9 :
+			upperCharSegments[display_num].a=1;
+			upperCharSegments[display_num].f=1;
+			upperCharSegments[display_num].g=1;
+			upperCharSegments[display_num].b=1;
+			upperCharSegments[display_num].c=1;
+
+		}
+
+
+}
+
+void upperCharSegments_0(){ // zeroes out the upper segments
+	for(int display_num=0; display_num<2; display_num++){
+		upperCharSegments[display_num].a=0;
+		upperCharSegments[display_num].b=0;
+		upperCharSegments[display_num].c=0;
+		upperCharSegments[display_num].d=0;
+		upperCharSegments[display_num].e=0;
+		upperCharSegments[display_num].f=0;
+		upperCharSegments[display_num].g=0;
+
+	}
+}
+
+void display_length(int length){
+
+	upperCharSegments_0();
+	SegmentLCD_UpperSegments(upperCharSegments); // we have to turn off the numbers that have already been displayed
+												// otherwise the display will become nonsense
+
+	int upper_decimal = length/10; // to get the upper decimal we have to divide the length by 10
+
+	int lower_decimal = length-10*upper_decimal;
+
+	number_decoder(lower_decimal,0); // we activate the needed segments with the decoder, on the first( number 0) display
+
+	if(upper_decimal!=0){
+		number_decoder(upper_decimal,1); // if the number has at least two digits, then we display the upper number too
+	}
+
+	SegmentLCD_UpperSegments(upperCharSegments);
+
+}
+
+
+void blink_dots(int blinkFlag){
+
+
+	if(blinkFlag == 1) {
+				  // Turn on all dots
+				  SegmentLCD_Symbol(LCD_SYMBOL_DP2, 1);
+				  SegmentLCD_Symbol(LCD_SYMBOL_DP3, 1);
+				  SegmentLCD_Symbol(LCD_SYMBOL_DP4, 1);
+				  SegmentLCD_Symbol(LCD_SYMBOL_DP5, 1);
+				  SegmentLCD_Symbol(LCD_SYMBOL_DP6, 1);
+
+			  } else {
+				  // Turn off all dots
+				  SegmentLCD_Symbol(LCD_SYMBOL_DP2, 0);
+				  SegmentLCD_Symbol(LCD_SYMBOL_DP3, 0);
+				  SegmentLCD_Symbol(LCD_SYMBOL_DP4, 0);
+				  SegmentLCD_Symbol(LCD_SYMBOL_DP5, 0);
+				  SegmentLCD_Symbol(LCD_SYMBOL_DP6, 0);
+			  }
+
 }
 
 void display_position(position* active_segments, int length){
@@ -532,23 +705,23 @@ void start_init(position* starting_segment, position* starting_food) {
                       4
                       |
                      DOWN
-pressing R0 the snake rotates left, which increases current_direction's value
-pressing R1 the snake rotates right, which decreases current_direction's value
+pressing PB0 the snake rotates left, which increases current direction's value
+pressing PB1 the snake rotates right, which decreases current direction's value
  */
-int update_direction(direction previous_direction, int R0state, int R1state){
-	int new_direction = previous_direction;   // if there weren't any button presses, the snake keeps going in the same direction
-	if (R0state){
+direction update_direction(direction previous_direction, bool left, bool right){
+	int new_direction = (int)previous_direction;   // we cast previous_direction back to int
+	if (left){                                     // so that we can use int operations on it
 		new_direction ++;
 		if(new_direction == 5)
 			new_direction = 1;
 	}
 
-	if (R1state){
+	if (right){
 	   new_direction --;
 	    if(new_direction == 0)
 		   new_direction = 4;
 		}
-	return new_direction; //give the previous direction back with a pointer too
+	return (direction)new_direction;             // we cast the return value back to direction type
 }
 
 
@@ -577,7 +750,7 @@ int collision_with_food(position* snake, int snake_length, position* food, posit
 
 	    	previous_food->minidisplay = food->minidisplay;
 	    	previous_food->segment = food->segment;
-	    	turn_off_display(previous_food);
+	    	turn_off_display(previous_food,1);
 	    	generate_food(food, snake);
 
 	    }
@@ -590,7 +763,7 @@ position move(position* snake, int snake_length, position snake_head){
 	position tail; //we give this back so that we can turn it off in the display function
 	tail = snake[snake_length-1];
 
-	turn_off_display(&tail);
+	turn_off_display(&tail,1);
 
 	for(int i=1; i<=snake_length; i++){
 
